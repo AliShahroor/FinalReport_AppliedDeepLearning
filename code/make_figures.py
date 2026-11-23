@@ -18,68 +18,73 @@ plt.rcParams.update({
 
 
 def pipeline():
-    fig, ax = plt.subplots(figsize=(7.0, 2.85))
-    ax.set_xlim(0, 7); ax.set_ylim(0, 2.85); ax.axis("off")
+    fig, ax = plt.subplots(figsize=(7.0, 3.15))
+    ax.set_xlim(0, 7); ax.set_ylim(0, 3.15); ax.axis("off")
 
     navy = "#1f3b53"
     blue = "#356f9f"
     ink = "#27343b"
     muted = "#5d6b73"
-    panels = ["#f4f6f7", "#eaf2f7", "#f4f1e9"]
 
     def panel(x, y, w, h, title, number, color):
         ax.add_patch(Rectangle((x, y), w, h, facecolor=color,
                                edgecolor="#87939a", linewidth=.8, linestyle=(0, (3, 2))))
-        ax.text(x + .10, y + h + .10, f"{number}. {title}", ha="left", va="bottom",
-                fontsize=7.7, weight="bold", color=ink)
+        ax.text(x + .10, y + h + .08, f"{number}. {title}", ha="left", va="bottom",
+                fontsize=7.5, weight="bold", color=ink)
 
-    def box(x, y, w, h, title, subtitle="", fill="#ffffff", edge=navy, size=6.8):
+    def box(x, y, w, h, title, subtitle="", fill="#ffffff", edge=navy, size=6.4):
         ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle="round,pad=.025,rounding_size=.035",
                                     facecolor=fill, edgecolor=edge, linewidth=.8))
-        ax.text(x + w / 2, y + h * .62, title, ha="center", va="center",
-                fontsize=size, weight="bold", color=ink, wrap=True)
+        ax.text(x + w / 2, y + h * .63, title, ha="center", va="center",
+                fontsize=size, weight="bold", color=ink)
         if subtitle:
-            ax.text(x + w / 2, y + h * .25, subtitle, ha="center", va="center",
-                    fontsize=5.7, color=muted)
+            ax.text(x + w / 2, y + h * .24, subtitle, ha="center", va="center",
+                    fontsize=5.5, color=muted)
 
-    def arrow(x1, y1, x2, y2, color=blue, width=.85, scale=7):
+    def arrow(x1, y1, x2, y2, color=blue, width=.8, scale=7):
         ax.add_patch(FancyArrowPatch((x1, y1), (x2, y2), arrowstyle="-|>",
                                      mutation_scale=scale, linewidth=width, color=color))
 
-    panel(.08, .80, 2.05, 1.62, "Evidence construction", "1", panels[0])
-    box(.22, 1.79, .78, .36, "PDF corpus", "papers + reports", fill="#ffffff")
-    box(1.20, 1.79, .78, .36, "Question", "unit + task type", fill="#ffffff")
-    arrow(.61, 1.76, .61, 1.55, muted, .7, 6)
-    arrow(1.59, 1.76, 1.59, 1.55, muted, .7, 6)
-    box(.40, 1.05, 1.42, .40, "BM25 + dense retrieval", "candidate passages", fill="#e8f1f5", edge=blue)
-    arrow(1.05, 1.02, 1.05, .88, blue, .8, 7)
+    # The top row is the actual method; the bottom row is the evaluation contract.
+    panel(.08, 1.25, 1.55, 1.42, "Inputs", "1", "#f4f6f7")
+    box(.22, 2.00, .58, .34, "PDFs", "source corpus")
+    box(.91, 2.00, .58, .34, "Question", "unit + type")
+    box(.39, 1.43, .93, .34, "query + corpus", "retrieval input", fill="#e8f1f5", edge=blue, size=6.0)
+    arrow(.51, 1.97, .69, 1.79, muted, .7, 6)
+    arrow(1.20, 1.97, 1.02, 1.79, muted, .7, 6)
 
-    panel(2.43, .80, 2.05, 1.62, "Evidence control", "2", panels[1])
-    box(2.64, 1.79, .75, .36, "RRF fusion", "rank lists", fill="#ffffff")
-    box(3.52, 1.79, .75, .36, "Reranker", "question-passage", fill="#ffffff")
-    arrow(3.40, 1.97, 3.50, 1.97, blue, .8, 7)
-    box(2.88, 1.05, 1.18, .40, "Top-k evidence", "small grounded context", fill="#dcebf4", edge=blue)
-    arrow(3.02, 1.76, 3.32, 1.48, blue, .8, 7)
-    arrow(3.89, 1.76, 3.62, 1.48, blue, .8, 7)
+    panel(1.82, 1.25, 2.35, 1.42, "Retrieval and evidence control", "2", "#eaf2f7")
+    box(2.00, 2.00, .80, .34, "BM25", "lexical rank", fill="#ffffff")
+    box(3.15, 2.00, .80, .34, "Dense", "semantic rank", fill="#ffffff")
+    box(2.52, 1.56, .92, .34, "RRF fusion", "combine ranks", fill="#ffffff")
+    box(2.43, 1.02, 1.10, .34, "Reranker", "question-passage", fill="#dcebf4", edge=blue)
+    arrow(2.40, 1.97, 2.78, 1.92, blue, .75, 6)
+    arrow(3.55, 1.97, 3.18, 1.92, blue, .75, 6)
+    arrow(2.98, 1.54, 2.98, 1.39, blue, .75, 6)
+    arrow(1.64, 1.70, 2.35, 2.00, blue, .75, 6)
+    arrow(1.64, 1.54, 3.50, 2.00, blue, .75, 6)
 
-    panel(4.78, .80, 2.14, 1.62, "Generation and checks", "3", panels[2])
-    box(4.98, 1.79, .78, .36, "Generator", "structured JSON", fill="#ffffff")
-    box(5.92, 1.79, .78, .36, "Validator", "value + unit + refs", fill="#ffffff")
-    arrow(5.78, 1.97, 5.88, 1.97, blue, .8, 7)
-    box(5.05, 1.05, 1.45, .40, "repair | normalize | abstain", "checked prediction", fill="#e7f0df", edge="#4f704d", size=6.2)
-    arrow(5.37, 1.76, 5.64, 1.48, blue, .8, 7)
-    arrow(6.31, 1.76, 6.00, 1.48, blue, .8, 7)
+    panel(4.36, 1.25, 2.56, 1.42, "Generation and validation", "3", "#f4f1e9")
+    box(4.55, 2.00, .92, .34, "Generator", "structured JSON", fill="#ffffff")
+    box(5.82, 2.00, .88, .34, "Validator", "schema + refs", fill="#ffffff")
+    box(4.92, 1.50, 1.48, .34, "repair / normalize", "format + units", fill="#ffffff", edge="#4f704d", size=6.1)
+    box(5.08, 1.02, 1.17, .34, "checked output", "or abstain", fill="#e7f0df", edge="#4f704d")
+    arrow(5.47, 2.00, 5.78, 2.00, blue, .75, 6)
+    arrow(6.26, 1.98, 5.91, 1.84, blue, .75, 6)
+    arrow(5.66, 1.48, 5.66, 1.38, muted, .7, 6)
+    arrow(5.66, 1.00, 5.66, .84, blue, .75, 6)
+    arrow(3.54, 1.19, 4.48, 1.19, blue, .8, 7)
 
-    ax.text(3.50, .45, "Evaluation contract", ha="center", va="center", fontsize=7.3,
+    ax.text(3.50, .63, "Evaluation contract", ha="center", va="center", fontsize=7.2,
             weight="bold", color=ink)
     for x, title, sub in [(1.05, "WattBot 2026", "blind Kaggle score"),
                           (3.50, "WattBot 2025", "41-question transfer"),
                           (5.95, "SciFact", "retrieval transfer")]:
-        box(x - .68, .05, 1.36, .28, title, sub, fill="#ffffff", edge="#87939a", size=6.1)
-        arrow(x, .78, x, .36, muted, .7, 6)
+        box(x - .68, .17, 1.36, .30, title, sub, fill="#ffffff", edge="#87939a", size=6.0)
+        arrow(5.66, .99, x, .49, muted, .65, 6)
 
-    ax.text(3.50, 2.73, "EvidenceFirst: retrieve, verify, then reason", ha="center",
-            va="center", fontsize=9.1, weight="bold", color=navy)
+    ax.text(3.50, 2.99, "EvidenceFirst: retrieve, verify, then reason", ha="center",
+            va="center", fontsize=9.0, weight="bold", color=navy)
     fig.tight_layout(pad=.12)
     fig.savefig(OUT / "pipeline.pdf", bbox_inches="tight")
     plt.close(fig)
