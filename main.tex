@@ -201,7 +201,7 @@ Range/unit normalization & .732 & .843 & .767 \\
 \end{table}
 
 \subsection{Blind Kaggle Result}
-The best WattBot 2026 candidate obtained a public Kaggle score of \textbf{0.966}. The public leaderboard places DetectorAI \textbf{1st of 22 teams}. The leaderboard uses approximately 56\% of the test data; the remaining 44\% determines the final standings. This rank is reported as the public Kaggle result, not as a guarantee of the hidden split.
+The best WattBot 2026 candidate obtained a public Kaggle score of \textbf{0.966}. The public leaderboard places DetectorAI \textbf{1st of 25 teams}. The leaderboard uses approximately 56\% of the test data; the remaining 44\% determines the final standings. This rank is reported as the public Kaggle result, not as a guarantee of the hidden split.
 
 \begin{table}[t]
 \centering
@@ -217,14 +217,14 @@ Rank & Team & Public score \\
 5 & Sherry & 0.936 \\
 \bottomrule
 \end{tabular}
-\caption{Top of the WattBot 2026 public leaderboard at the time of writing.}
+\caption{Top of the WattBot 2026 public leaderboard at the time of writing. DetectorAI is ranked first of 25 teams.}
 \label{tab:leaderboard}
 \end{table}
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figures/kaggle_leaderboard.png}
-\caption{Public WattBot 2026 leaderboard showing DetectorAI ranked first with 0.966.}
+\caption{Public WattBot 2026 leaderboard showing DetectorAI ranked first of 25 teams with 0.966.}
 \label{fig:kaggle}
 \end{figure}
 
@@ -242,7 +242,7 @@ The evaluation is primarily English and focuses on scientific questions about AI
 \label{sec:conclusion}
 We presented an evidence-controlled RAG pipeline for precision-critical scientific QA. The pipeline combines lexical and neural retrieval, neural reranking, structured generation, citation validation, abstention, and deterministic normalization. It achieved a public WattBot 2026 score of 0.966 and transferred to WattBot 2025 with an end-to-end score of 0.786 after conservative normalization. The central lesson is simple: improving reliability is not only a matter of selecting a larger generator. Retrieving the right evidence, preserving a valid output structure, and checking units and citations are separate engineering and research problems.
 
-For the course submission, the reported result is: \textbf{DetectorAI, 1st of 22 teams, public score 0.966}. The submitted code should include the saved retrieval files, model configuration, normalization script, validator, and instructions for running the local evaluation without private API credentials.
+For the course submission, the reported result is: \textbf{DetectorAI, 1st of 25 teams, public score 0.966}. The submitted code should include the saved retrieval files, model configuration, normalization script, validator, and instructions for running the local evaluation without private API credentials.
 
 \section*{Ethics Statement}
 The system is designed to make scientific answers more inspectable, not to replace expert judgment. Environmental estimates in the source literature can be uncertain or incomparable across hardware, geography, and system boundaries. We therefore preserve source identifiers and explanations, report abstention behavior, and avoid presenting a generated answer as an authoritative measurement. External API credentials are kept out of the repository and cached outputs are used for reproducibility when an API is unavailable.
