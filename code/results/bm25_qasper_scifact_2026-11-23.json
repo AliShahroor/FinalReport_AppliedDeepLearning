@@ -1,0 +1,19 @@
+{
+  "note": "BM25 evidence-retrieval smoke test; not end-to-end answer accuracy.",
+  "scifact": {
+    "task": "SciFact",
+    "corpus_documents": 5183,
+    "n": 188,
+    "r@1": 0.7021276595744681,
+    "r@5": 0.898936170212766,
+    "r@10": 0.9361702127659575
+  },
+  "qasper": {
+    "task": "QASPER",
+    "papers": 281,
+    "n": 927,
+    "r@1": 0.23624595469255663,
+    "r@5": 0.6245954692556634,
+    "r@10": 0.7874865156418555
+  }
+}

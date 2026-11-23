@@ -43,7 +43,7 @@ We investigate the following question:
 \emph{When scientific QA is evaluated jointly on answer values and citations, how much improvement comes from retrieval quality, neural reranking, structured-output recovery, and deterministic evidence control compared with changing the generator?}
 \end{quote}
 
-Our case study is WattBot 2026, a Kaggle benchmark containing questions about the environmental costs of AI and a corpus of scientific papers and reports. The benchmark is useful because it includes direct extraction, numerical calculation, table and figure reading, cross-paper synthesis, and unanswerable questions. We additionally evaluate transfer to WattBot 2025 and to SciFact, a scientific claim-verification dataset \citep{wadden2020scifact}. Our contributions are:
+Our case study is WattBot 2026, a Kaggle benchmark containing questions about the environmental costs of AI and a corpus of scientific papers and reports. The benchmark is useful because it includes direct extraction, numerical calculation, table and figure reading, cross-paper synthesis, and unanswerable questions. We additionally evaluate transfer to WattBot 2025, SciFact, and QASPER, a scientific claim-verification and full-paper question-answering setting \citep{wadden2020scifact,dasigi2021qasper}. Our contributions are:
 \begin{itemize}
 \item an evidence-controlled RAG pipeline combining BM25, dense retrieval, neural reranking, structured generation, and deterministic validation;
 \item controlled experiments separating retrieval quality, generator behavior, output validity, citations, and abstention;
@@ -71,7 +71,7 @@ where $V$ is answer-value correctness, $C_{F1}$ is citation F1, and $A$ measures
 The benchmark contains heterogeneous question types. Direct questions ask for an entity or quoted value. Math questions combine values from multiple documents. Table and figure questions require reading structured or visual evidence. Reconcile questions require reporting multiple values rather than selecting one source. This mixture makes a single model score difficult to interpret without component-level analysis.
 
 \subsection{Transfer Sets}
-WattBot 2025 contains 41 labeled questions and a related document collection. SciFact provides scientific claims and evidence-bearing abstracts. We use transfer data only for evaluation and keep its labels separate from the WattBot 2026 test submission.
+WattBot 2025 contains 41 labeled questions and a related document collection. SciFact provides scientific claims and evidence-bearing abstracts. QASPER provides information-seeking questions over full research papers; our initial transfer result uses its development set and evaluates evidence retrieval rather than the full WattBot answer schema. We use transfer data only for evaluation and keep its labels separate from the WattBot 2026 test submission.
 
 \section{Evidence-Controlled Pipeline}
 \label{sec:method}
@@ -79,8 +79,8 @@ Figure~\ref{fig:pipeline} summarizes the system. PDF documents are extracted wit
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=0.98\textwidth]{figures/pipeline.pdf}
-\caption{Overview of the evidence-controlled RAG pipeline. The generator is not asked to search the entire corpus; it receives a small, ranked evidence set.}
+\includegraphics[width=0.98\textwidth]{figures/image.png}
+\caption{Overview of the evidence-controlled RAG pipeline. The generator receives a compact ranked evidence set, produces a structured answer, and is checked for schema, citations, units, repairability, and abstention. The bottom row summarizes the in-domain and transfer evaluations.}
 \label{fig:pipeline}
 \end{figure*}
 
