@@ -149,6 +149,21 @@ Qwen3.6 direct & .718 & .781 & 1.000 & .7450 \\
 \subsection{Unseen-Source Generalization}
 To test whether the generator depends on seeing the same source papers during training and validation, we construct connected citation groups and keep every group in a single fold. The held-out fold contains 75 questions from 9 source groups, while training uses 170 questions from the remaining groups; the train and validation reference sets have zero overlap. On this held-out fold, the unadapted Qwen3.5-27B pipeline obtains 0.865, while LoRA fine-tuning on the remaining questions obtains 0.835 (value match 0.813, citation F1 0.873, and abstention agreement 1.000). Thus the evidence-controlled pipeline transfers to unseen source papers, but in-domain fine-tuning is not automatically beneficial and appears to overfit some source-specific patterns. This is still one fold rather than a five-fold estimate.
 
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{lrrrr}
+\toprule
+System & $n$ & $V$ & $C_{F1}$ & Overall \\
+\midrule
+Base pipeline & 75 & .867 & .859 & .865 \\
+Source-disjoint LoRA & 75 & .813 & .873 & .835 \\
+\bottomrule
+\end{tabular}
+\caption{Matched source-disjoint generalization comparison on the same 75-question fold.}
+\label{tab:source-disjoint}
+\end{table}
+
 \begin{table*}[t]
 \centering
 \scriptsize
@@ -157,12 +172,6 @@ To test whether the generator depends on seeing the same source papers during tr
 \toprule
 Model / policy & Role & $n$ & $V$ & $C_{F1}$ & $A$ & Overall \\
 \midrule
-Qwen3.5-27B, thinking \citep{qwen3} & full development & 245 & .665 & .667 & 1.000 & .6824 \\
-Qwen3.5-27B + direct repair \citep{qwen3} & full development & 245 & .767 & .787 & .996 & .7827 \\
-Qwen3.5-27B + conservative recovery \citep{qwen3} & full development & 245 & .767 & .789 & .996 & \textbf{.7831} \\
-Qwen3.6-35B-A3B-FP8, direct \citep{qwen3} & full development & 245 & .718 & .781 & 1.000 & .7450 \\
-\midrule
-\multicolumn{7}{l}{\emph{Frozen 49-question fold}} \\
 Qwen3.5-27B MS-SWIFT LoRA \citep{qwen3} & frozen fold & 49 & .714 & .811 & -- & .7479 \\
 Kimi K3.1 Pro \citep{kimiwa} & frozen fold & 49 & .837 & .752 & 1.000 & .8279 \\
 Kimi K3.1 Pro, retry budget \citep{kimiwa} & frozen fold & 49 & .857 & .772 & 1.000 & \textbf{.8470} \\
@@ -173,7 +182,7 @@ Nemotron 3 Ultra 550B \citep{nemotronultra} & frozen fold / free panel & 49 & .8
 Dots3 Note Preview \citep{dots3} & frozen fold & 49 & .571 & .581 & 1.000 & .5948 \\
 \bottomrule
 \end{tabular}}
-\caption{Comprehensive generator comparison. $V$ is answer-value matching, $C_{F1}$ is citation F1, and $A$ is abstention agreement. The 245-question development results and 49-question frozen-fold results are different evaluation folds and should not be compared as a single ranking. Bold values mark the best overall score within each fold; Kimi with a retry budget and Nemotron tie on the frozen fold. Each model is cited to a technical report, model card, or official provider documentation. The scores are our runs, not vendor benchmark claims.}
+\caption{Matched generator diagnostics on the same frozen 49-question fold. $V$ is answer-value matching, $C_{F1}$ is citation F1, and $A$ is abstention agreement. Bold marks the best overall score in this fold. These rows are not directly comparable with the full-development ablation table. Each model is cited to a technical report, model card, or official provider documentation.}
 \label{tab:models}
 \end{table*}
 
