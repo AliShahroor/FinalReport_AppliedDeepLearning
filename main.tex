@@ -102,7 +102,7 @@ All retrieval outputs, raw generations, normalized predictions, and scores are s
 \section{Results}
 \label{sec:results}
 \subsection{Retrieval Transfer}
-Table~\ref{tab:retrieval} reports Recall@1 on the two transfer datasets. Reranking improves early recall on both datasets. The hybrid score is not always higher than BM25 at rank one, which is a useful reminder that fusion and reranking should be evaluated together rather than assumed to help every cutoff.
+Table~\ref{tab:retrieval} reports Recall@1 on the two transfer datasets. Reranking improves early recall on both datasets. The hybrid score is not always higher than BM25 at rank one, which is a useful reminder that fusion and reranking should be evaluated together rather than assumed to help every cutoff. On QASPER, a separate BM25 diagnostic reaches 23.6, 62.5, and 78.7 percent at ranks 1, 5, and 10 over 927 answerable development questions; these values are not directly comparable with the WattBot and SciFact Recall@1 rows because QASPER contains full papers and is reported at multiple cutoffs.
 
 \begin{table}[t]
 \centering
@@ -122,7 +122,7 @@ SciFact & 70.20 & 68.28 & \textbf{82.77} \\
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figures/retrieval_r1.pdf}
-\caption{Recall@1 for the transfer retrieval experiments.}
+\caption{Retrieval diagnostics. The left panel compares Recall@1 for WattBot 2025 and SciFact; the right panel reports BM25 Recall@1, Recall@5, and Recall@10 on QASPER.}
 \label{fig:retrieval}
 \end{figure}
 
@@ -145,6 +145,9 @@ Qwen3.6 direct & .718 & .781 & 1.000 & .7450 \\
 \caption{Full development-set results. $V$ is answer-value matching, $C_{F1}$ is citation F1, and $A$ is abstention agreement.}
 \label{tab:generator}
 \end{table}
+
+\subsection{Unseen-Source Generalization}
+To test whether the generator depends on seeing the same source papers during training and validation, we construct connected citation groups and keep every group in a single fold. The held-out fold contains 75 questions from 9 source groups, while training uses 170 questions from the remaining groups; the train and validation reference sets have zero overlap. Fine-tuning Qwen3.5-27B with LoRA on this source-disjoint split obtains an overall score of \textbf{0.835}, with value match 0.813, citation F1 0.873, and abstention agreement 1.000. This is a stricter test than the ordinary random fold and supports the claim that the pipeline can transfer to unseen source papers, although it is still one fold rather than a five-fold estimate.
 
 \begin{table*}[t]
 \centering
@@ -236,7 +239,7 @@ These findings are relevant to hallucination and confabulation research. We do n
 
 \section{Limitations}
 \label{sec:limitations}
-The evaluation is primarily English and focuses on scientific questions about AI infrastructure and environmental impact. WattBot 2025 is small, with 41 labeled questions, so its transfer score should be interpreted as a stress test rather than a population estimate. SciFact measures scientific claim retrieval rather than the full WattBot answer schema. The public Kaggle score is a blind benchmark result and does not by itself identify which component caused each gain. The hosted and free-model comparisons use one fixed 49-question fold from the 245-question development set; they are paired diagnostics, not full-dataset estimates. A stronger follow-up would evaluate these models on all 245 questions or across all five folds and report bootstrap confidence intervals. Finally, the system requires substantial GPU resources for dense retrieval, reranking, and long-context generation; reducing this cost is an important follow-up.
+The evaluation is primarily English and focuses on scientific questions about AI infrastructure and environmental impact. WattBot 2025 is small, with 41 labeled questions, so its transfer score should be interpreted as a stress test rather than a population estimate. SciFact and QASPER evaluate evidence retrieval rather than the full WattBot answer schema. The public Kaggle score is a blind benchmark result and does not by itself identify which component caused each gain. The hosted and free-model comparisons use one fixed 49-question fold from the 245-question development set; they are paired diagnostics, not full-dataset estimates. The source-disjoint Qwen experiment uses one 75-question held-out fold, so five grouped folds and bootstrap intervals remain useful future work. Finally, the system requires substantial GPU resources for dense retrieval, reranking, and long-context generation; reducing this cost is an important follow-up.
 
 \section{Conclusion}
 \label{sec:conclusion}

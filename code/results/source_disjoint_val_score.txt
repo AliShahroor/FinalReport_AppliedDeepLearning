@@ -1,0 +1,44 @@
+Component scores (means):
+  value match  : 0.813
+  unit match   : 1.000
+  ref overlap  : 0.853  (Jaccard; scored component uses F1)
+  ref precision: 0.893
+  ref recall   : 0.871
+  ref F1       : 0.873
+  NA agreement : 1.000
+OVERALL SCORE  : 0.835  (ref component = f1)
+
+Error rate by evidence type (multi-label from SOLUTION; buckets overlap):
+  type            wrong   % wrong   score
+  Quote          7/51      13.7%   0.876
+  Table          7/18      38.9%   0.696
+  Figure         2/8       25.0%   0.794
+  Math           7/15      46.7%   0.607
+  CrossPaper     6/12      50.0%   0.562
+  Reconcile      2/7       28.6%   0.736
+  ALL           14/75      18.7%   0.835
+
+Examples of mismatches (expected vs. got):
+- id=q009
+  expected: value=[116.9,121.7] | unit=household-years | ref=['jegham2025', 'patterson2021']
+  got     : value=1287 | unit=household-years | ref=['chen2025grid']
+  why     : value out of range: expected [116.9, 121.7], got 1287.0
+  why     : ref partial/none: expected ['jegham2025', 'patterson2021'], got ['chen2025grid']
+- id=q011
+  expected: value=Flan-T5-xxl | unit=is_blank | ref=['luccioni2024']
+  got     : value=GPT-3 | unit=is_blank | ref=['luccioni2024', 'patterson2021']
+  why     : ref partial/none: expected ['luccioni2024'], got ['luccioni2024', 'patterson2021']
+- id=q023
+  expected: value=[32.7,34] | unit=multiplier | ref=['luccioni2024']
+  got     : value=3.4 | unit=multiplier | ref=['luccioni2024']
+  why     : value out of range: expected [32.7, 34.0], got 3.4
+- id=q083
+  expected: value=[12,12.68] | unit=multiplier | ref=['dodge2022', 'patterson2021']
+  got     : value=750 | unit=multiplier | ref=['dodge2022', 'patterson2021']
+  why     : value out of range: expected [12.0, 12.68], got 750.0
+- id=q088
+  expected: value=[6.783,7.06] | unit=multiplier | ref=['jegham2025', 'luccioni2024']
+  got     : value=100 | unit=multiplier | ref=['luccioni2024']
+  why     : value out of range: expected [6.783, 7.06], got 100.0
+  why     : ref partial/none: expected ['jegham2025', 'luccioni2024'], got ['luccioni2024']
+0.8346666666666667
