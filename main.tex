@@ -100,7 +100,7 @@ Some errors are representational rather than semantic. For example, a model may 
 \label{sec:setup}
 The main WattBot development experiments use the frozen retrieved evidence and a Qwen3.5-27B generator from the Qwen family \citep{qwen3,qwen3embedding}. We compare thinking mode, direct generation, structured-output repair, and conservative field recovery. Additional controlled experiments use a Qwen3.6 mixture-of-experts generator, a task-adapted Qwen3.5 model, and hosted models including Kimi K3.1 Pro, Gemini 3.8 Flash, GPT-6.1 Terra, Dots3 Note Preview, GLM-5.3 Flash, and Nemotron 3 Ultra on frozen evidence. The GLM and Nemotron runs were free-provider verifier-panel runs; Dots3 was a free standalone control. These comparisons are diagnostic and are not treated as interchangeable with the full development set. Model identifiers are reported exactly as used, and each source is documented in the bibliography or official model documentation.
 
-All retrieval outputs, raw generations, normalized predictions, and scores are saved. The primary public Kaggle score is reported separately from the local experiments because the Kaggle test set is blind. The current source-audited candidate is `testing38\_q157\_q306\_reverted.csv`, which obtained a public score of 0.966. The leaderboard identity for this course report is Team DetectorAI.
+All retrieval outputs, raw generations, normalized predictions, and scores are saved. The primary public Kaggle score is reported separately from the local experiments because the Kaggle test set is blind. The current source-audited candidate is `testing38\_q157\_q306\_reverted.csv`, which obtained a public score of 0.966. The leaderboard identity for this course report is Team EviRAG.
 
 \section{Results}
 \label{sec:results}
@@ -257,7 +257,7 @@ Range/unit normalization & .732 & .843 & .767 \\
 \end{table}
 
 \subsection{Blind Kaggle Result}
-The best WattBot 2026 candidate obtained a public Kaggle score of \textbf{0.966}. The public leaderboard places DetectorAI \textbf{1st of 25 teams}. The leaderboard uses approximately 56\% of the test data; the remaining 44\% determines the final standings. This rank is reported as the public Kaggle result, not as a guarantee of the hidden split.
+The best WattBot 2026 candidate obtained a public Kaggle score of \textbf{0.966}. The public leaderboard places EviRAG \textbf{1st of 26 teams}. The leaderboard uses approximately 56\% of the test data; the remaining 44\% determines the final standings. This rank is reported as the public Kaggle result, not as a guarantee of the hidden split.
 
 \begin{table}[t]
 \centering
@@ -266,21 +266,21 @@ The best WattBot 2026 candidate obtained a public Kaggle score of \textbf{0.966}
 \toprule
 Rank & Team & Public score \\
 \midrule
-1 & DetectorAI & \textbf{0.966} \\
+1 & EviRAG & \textbf{0.966} \\
 2 & Adora Tran & 0.964 \\
 3 & dongdong xue8 & 0.963 \\
 4 & David Zhang 1029 & 0.949 \\
-5 & Sherry & 0.936 \\
+5 & zzda75 & 0.942 \\
 \bottomrule
 \end{tabular}
-\caption{Top of the WattBot 2026 public leaderboard at the time of writing. DetectorAI is ranked first of 25 teams.}
+\caption{Top of the WattBot 2026 public leaderboard at the time of writing. EviRAG is ranked first of 26 teams.}
 \label{tab:leaderboard}
 \end{table}
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figures/kaggle_leaderboard.png}
-\caption{Public WattBot 2026 leaderboard showing DetectorAI ranked first of 25 teams with 0.966.}
+\caption{Public WattBot 2026 leaderboard showing EviRAG ranked first of 26 teams with 0.966.}
 \label{fig:kaggle}
 \end{figure}
 
@@ -298,7 +298,7 @@ The evaluation is primarily English and focuses on scientific questions about AI
 \label{sec:conclusion}
 We presented an evidence-controlled RAG pipeline for precision-critical scientific QA. The pipeline combines lexical and neural retrieval, neural reranking, structured generation, citation validation, abstention, deterministic normalization, and an explicit evidence budget. It achieved a public WattBot 2026 score of 0.966, transferred to WattBot 2025 with an end-to-end score of 0.786 after conservative normalization, and reached 0.761 on the source-disjoint top-three evidence condition. The central lesson is simple: improving reliability is not only a matter of selecting a larger generator. Retrieving the right evidence, limiting irrelevant context, preserving a valid output structure, and checking units and citations are separate engineering and research problems.
 
-For the course submission, the reported result is: \textbf{DetectorAI, 1st of 25 teams, public score 0.966}. The submitted code should include the saved retrieval files, model configuration, normalization script, validator, and instructions for running the local evaluation without private API credentials.
+For the course submission, the reported result is: \textbf{EviRAG, 1st of 26 teams, public score 0.966}. The submitted code should include the saved retrieval files, model configuration, normalization script, validator, and instructions for running the local evaluation without private API credentials.
 
 \section*{Ethics Statement}
 The system is designed to make scientific answers more inspectable, not to replace expert judgment. Environmental estimates in the source literature can be uncertain or incomparable across hardware, geography, and system boundaries. We therefore preserve source identifiers and explanations, report abstention behavior, and avoid presenting a generated answer as an authoritative measurement. External API credentials are kept out of the repository and cached outputs are used for reproducibility when an API is unavailable.
