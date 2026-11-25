@@ -22,6 +22,7 @@ Ali Shahroor and Mohammed Al-Ani contributed equally.
 - `code/`: scoring, transfer-evaluation, and core EviRAG pipeline scripts.
 - `code/README.md`: no-API reproduction instructions and API/Kaggle boundaries.
 - `code/reproducibility_check.py`: one-command no-API smoke test.
+- `code/evirag_reproducibility_check.ipynb`: executed notebook version of the same check.
 
 ## Compile
 
@@ -48,6 +49,8 @@ python3 code/reproducibility_check.py
 ```
 
 The check is deliberately API-free and should print `EviRAG no-API reproducibility check: PASS`. The full retrieval and generation pipeline is available in [`code/pipeline/`](https://github.com/AliShahroor/FinalReport_AppliedDeepLearning/tree/main/code/pipeline); it requires the original WattBot documents, model weights, and GPU resources, which are not redistributed in this report repository.
+
+The same verification is available as an executed [Jupyter notebook](https://github.com/AliShahroor/FinalReport_AppliedDeepLearning/blob/main/code/evirag_reproducibility_check.ipynb).
 
 ## Scope and limitations
 
