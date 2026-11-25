@@ -17,6 +17,7 @@ Ali Shahroor and Mohammed Al-Ani contributed equally.
 - `main.tex`: LaTeX source for the university report.
 - `custom.bib`: bibliography.
 - `evidencefirst_course_report.pdf`: compiled report.
+- `eacl/`: anonymous EACL/CHOMPS submission source and compiled PDF.
 - `figures/`: report figures.
 - `code/`: selected scoring and transfer-evaluation scripts.
 
