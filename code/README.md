@@ -2,6 +2,17 @@
 
 EviRAG has two execution paths.
 
+## Quick start
+
+From the repository root, install the small dependency used by the local scorer and run the no-API smoke test:
+
+```bash
+python3 -m pip install -r code/requirements-minimal.txt
+python3 code/reproducibility_check.py
+```
+
+This verifies the scorer, the evidence-budget helper, and the archived result summaries. It does not need an API key, GPU, or Kaggle access.
+
 ## No-API evaluation
 
 The reported local scores can be checked without a hosted API or secret key. The deterministic scorer compares a gold file with a prediction file:
@@ -43,3 +54,10 @@ The main stages are:
 Hosted-model scripts are optional diagnostics. They require an environment variable such as `OPENROUTER_API_KEY`; no credential is stored in this repository, and the key must never be committed or printed. The no-API path is the recommended reproducibility path for grading.
 
 The Kaggle score is a blind public-test result. It cannot be recreated locally because the test labels are hidden. The paper reports it separately from the reproducible local ablations and identifies the public leaderboard as approximately 56% of the test set.
+
+## Source links
+
+- Repository: <https://github.com/AliShahroor/FinalReport_AppliedDeepLearning>
+- University report source: <https://github.com/AliShahroor/FinalReport_AppliedDeepLearning/blob/main/main.tex>
+- Pipeline code: <https://github.com/AliShahroor/FinalReport_AppliedDeepLearning/tree/main/code/pipeline>
+- Reproducibility check: <https://github.com/AliShahroor/FinalReport_AppliedDeepLearning/blob/main/code/reproducibility_check.py>

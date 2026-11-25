@@ -21,6 +21,7 @@ Ali Shahroor and Mohammed Al-Ani contributed equally.
 - `figures/`: report figures.
 - `code/`: scoring, transfer-evaluation, and core EviRAG pipeline scripts.
 - `code/README.md`: no-API reproduction instructions and API/Kaggle boundaries.
+- `code/reproducibility_check.py`: one-command no-API smoke test.
 
 ## Compile
 
@@ -34,6 +35,19 @@ pdflatex -interaction=nonstopmode main.tex
 ```
 
 The public WattBot 2026 result reported in the paper is the blind Kaggle score; local development and transfer experiments are reported separately.
+
+## Run the code
+
+Clone the repository and run the reproducibility check:
+
+```bash
+git clone https://github.com/AliShahroor/FinalReport_AppliedDeepLearning.git
+cd FinalReport_AppliedDeepLearning
+python3 -m pip install -r code/requirements-minimal.txt
+python3 code/reproducibility_check.py
+```
+
+The check is deliberately API-free and should print `EviRAG no-API reproducibility check: PASS`. The full retrieval and generation pipeline is available in [`code/pipeline/`](https://github.com/AliShahroor/FinalReport_AppliedDeepLearning/tree/main/code/pipeline); it requires the original WattBot documents, model weights, and GPU resources, which are not redistributed in this report repository.
 
 ## Scope and limitations
 
