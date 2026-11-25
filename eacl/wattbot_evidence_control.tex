@@ -11,8 +11,9 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{url}
+\newcommand{\method}{\textbf{EviRAG}}
 
-\title{EvidenceFirst: Retrieve, Verify, Then Reason for Precision-Critical Scientific QA}
+\title{\method: Retrieve, Verify, Then Reason for Precision-Critical Scientific QA}
 
 \author{Anonymous EACL submission}
 
@@ -20,7 +21,7 @@
 \maketitle
 
 \begin{abstract}
-Large language models can answer scientific questions fluently while still selecting the wrong source, misreading a table, or returning a numerically plausible but unsupported value. We study an evidence-controlled retrieval-augmented generation (RAG) pipeline for questions about the energy, carbon, and water costs of artificial intelligence. The system combines lexical retrieval, dense retrieval, neural reranking, structured generation, citation checks, abstention, and deterministic answer normalization. On the WattBot 2026 Kaggle benchmark, a source-audited candidate reached a public score of 0.966 under the competition's joint answer-and-citation metric. Controlled local experiments show that output repair improves a Qwen3.5-27B development score from 0.6824 to 0.7827, while neural reranking improves Recall@1 on two transfer datasets. On a 41-question WattBot 2025 transfer set, the end-to-end score is 0.731 before normalization and 0.786 after conservative range and unit normalization. On a source-disjoint fold, restricting the final context to three reranked passages improves the score from 0.710 to 0.761; across five grouped folds, LoRA obtains a macro-average of 0.759 (SD 0.162). These results suggest that reliability is not determined by generator scale alone: evidence selection, context size, and structured-output control are separate, measurable capabilities.
+Large language models can answer scientific questions fluently while still selecting the wrong source, misreading a table, or returning a numerically plausible but unsupported value. We introduce \method, an evidence-first retrieval-augmented generation (RAG) pipeline for questions about the energy, carbon, and water costs of artificial intelligence. The system combines lexical retrieval, dense retrieval, neural reranking, structured generation, citation checks, abstention, and deterministic answer normalization. On the WattBot 2026 Kaggle benchmark, a source-audited candidate reached a public score of 0.966 under the competition's joint answer-and-citation metric. Controlled local experiments show that output repair improves a Qwen3.5-27B development score from 0.6824 to 0.7827, while neural reranking improves Recall@1 on two transfer datasets. On a 41-question WattBot 2025 transfer set, the end-to-end score is 0.731 before normalization and 0.786 after conservative range and unit normalization. On a source-disjoint fold, restricting the final context to three reranked passages improves the score from 0.710 to 0.761; across five grouped folds, LoRA obtains a macro-average of 0.759 (SD 0.162). These results suggest that reliability is not determined by generator scale alone: evidence selection, context size, and structured-output control are separate, measurable capabilities.
 \end{abstract}
 
 \section{Introduction}
@@ -84,7 +85,7 @@ The generator is prompted to return a fixed schema containing an answer value, u
 \subsection{Deterministic Normalization}
 Some errors are representational rather than semantic. For example, a model may output ``80--90'' when the scorer requires ``[80,90]'', or may report ``10--50 responses per bottle'' when the question asks for bottles per response. Our normalization layer applies only transformations determined by the question unit and explicit answer format. It does not use gold labels and does not replace a substantive model answer with a manually selected value.
 
-\paragraph{Naming convention.} We use \emph{EvidenceFirst-RAG} for the complete method: hybrid lexical--dense retrieval, neural reranking, a compact evidence budget, structured generation, and deterministic validation. BM25, hybrid retrieval, and alternative evidence budgets are ablations of the same method. The preferred configuration identified here is \emph{EvidenceFirst-RAG-Top3}.
+\paragraph{Naming convention.} \method{} is the complete method: hybrid lexical--dense retrieval, neural reranking, a compact evidence budget, structured generation, and deterministic validation. BM25, hybrid retrieval, and alternative evidence budgets are ablations of the same method. The preferred configuration identified here is \method-Top3.
 
 \section{Experimental Setup}
 \label{sec:setup}
@@ -95,7 +96,7 @@ All retrieval outputs, raw generations, normalized predictions, and scores are s
 \section{Results}
 \label{sec:results}
 \subsection{Retrieval Transfer}
-Table~\ref{tab:retrieval} reports Recall@1 on the two transfer datasets. Reranking improves early recall on both datasets. The hybrid score is not always higher than BM25 at rank one, which is a useful reminder that fusion and reranking should be evaluated together rather than assumed to help every cutoff.
+Table~\ref{tab:retrieval} reports Recall@1 on the two transfer datasets. Reranking improves early recall on both datasets. The hybrid score is not always higher than BM25 at rank one, which is a useful reminder that fusion and reranking should be evaluated together rather than assumed to help every cutoff. QASPER is used only as a retrieval-only diagnostic here; we do not claim an end-to-end WattBot answer score on its full-paper questions.
 
 \begin{table}[t]
 \centering
@@ -153,10 +154,10 @@ BM25-only ablation & 75 & .580 \\
 Hybrid-retrieval ablation & 75 & .709 \\
 Full reranker, top-12 & 75 & .710 \\
 Full reranker, top-6 & 75 & .687 \\
-EvidenceFirst-RAG-Top3 & 75 & $\mathbf{.761}$ \\
+\method-Top3 & 75 & $\mathbf{.761}$ \\
 \bottomrule
 \end{tabular}
-\caption{EvidenceFirst-RAG retrieval and evidence-budget ablations on the same source-disjoint fold.}
+\caption{\method{} retrieval and evidence-budget ablations on the same source-disjoint fold.}
 \label{tab:evidence-budget}
 \end{table}
 

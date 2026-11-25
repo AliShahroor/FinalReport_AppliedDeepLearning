@@ -11,8 +11,9 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{url}
+\newcommand{\method}{\textbf{EviRAG}}
 
-\title{EvidenceFirst: Retrieve, Verify, Then Reason for Precision-Critical Scientific QA}
+\title{\method: Retrieve, Verify, Then Reason for Precision-Critical Scientific QA}
 
 \author{
   Ali Shahroor$^{1,*}$ \quad
@@ -29,7 +30,7 @@
 \maketitle
 
 \begin{abstract}
-Large language models can answer scientific questions fluently while still selecting the wrong source, misreading a table, or returning a numerically plausible but unsupported value. We study an evidence-controlled retrieval-augmented generation (RAG) pipeline for questions about the energy, carbon, and water costs of artificial intelligence. The system combines lexical retrieval, dense retrieval, neural reranking, structured generation, citation checks, abstention, and deterministic answer normalization. On the WattBot 2026 Kaggle benchmark, a source-audited candidate reached a public score of 0.966 under the competition's joint answer-and-citation metric. Controlled local experiments show that output repair improves a Qwen3.5-27B development score from 0.6824 to 0.7827, while neural reranking improves Recall@1 on two transfer datasets. On a 41-question WattBot 2025 transfer set, the end-to-end score is 0.731 before normalization and 0.786 after conservative range and unit normalization. On a source-disjoint fold, restricting the final context to three reranked passages improves the score from 0.710 to 0.761; across five grouped folds, LoRA obtains a macro-average of 0.759 (SD 0.162). These results suggest that reliability is not determined by generator scale alone: evidence selection, context size, and structured-output control are separate, measurable capabilities.
+Large language models can answer scientific questions fluently while still selecting the wrong source, misreading a table, or returning a numerically plausible but unsupported value. We introduce \method, an evidence-first retrieval-augmented generation (RAG) pipeline for questions about the energy, carbon, and water costs of artificial intelligence. The system combines lexical retrieval, dense retrieval, neural reranking, structured generation, citation checks, abstention, and deterministic answer normalization. On the WattBot 2026 Kaggle benchmark, a source-audited candidate reached a public score of 0.966 under the competition's joint answer-and-citation metric. Controlled local experiments show that output repair improves a Qwen3.5-27B development score from 0.6824 to 0.7827, while neural reranking improves Recall@1 on two transfer datasets. On a 41-question WattBot 2025 transfer set, the end-to-end score is 0.731 before normalization and 0.786 after conservative range and unit normalization. On a source-disjoint fold, restricting the final context to three reranked passages improves the score from 0.710 to 0.761; across five grouped folds, LoRA obtains a macro-average of 0.759 (SD 0.162). These results suggest that reliability is not determined by generator scale alone: evidence selection, context size, and structured-output control are separate, measurable capabilities.
 \end{abstract}
 
 \section{Introduction}
@@ -93,7 +94,7 @@ The generator is prompted to return a fixed schema containing an answer value, u
 \subsection{Deterministic Normalization}
 Some errors are representational rather than semantic. For example, a model may output ``80--90'' when the scorer requires ``[80,90]'', or may report ``10--50 responses per bottle'' when the question asks for bottles per response. Our normalization layer applies only transformations determined by the question unit and explicit answer format. It does not use gold labels and does not replace a substantive model answer with a manually selected value.
 
-\paragraph{Naming convention.} We use \emph{EvidenceFirst-RAG} for the complete method: hybrid lexical--dense retrieval, neural reranking, a compact evidence budget, structured generation, and deterministic validation. Rows labelled BM25, hybrid retrieval, or a different evidence budget are ablations of EvidenceFirst-RAG, not competing end-to-end methods. Rows in the generator table replace only the generator or output policy while keeping the evidence setup fixed. The preferred configuration identified here is \emph{EvidenceFirst-RAG-Top3}.
+\paragraph{Naming convention.} \method{} is the complete method: hybrid lexical--dense retrieval, neural reranking, a compact evidence budget, structured generation, and deterministic validation. Rows labelled BM25, hybrid retrieval, or a different evidence budget are ablations of \method{}, not competing end-to-end methods. Rows in the generator table replace only the generator or output policy while keeping the evidence setup fixed. The preferred configuration identified here is \method-Top3.
 
 \section{Experimental Setup}
 \label{sec:setup}
@@ -104,7 +105,7 @@ All retrieval outputs, raw generations, normalized predictions, and scores are s
 \section{Results}
 \label{sec:results}
 \subsection{Retrieval Transfer}
-Table~\ref{tab:retrieval} reports Recall@1 on the two transfer datasets. Reranking improves early recall on both datasets. The hybrid score is not always higher than BM25 at rank one, which is a useful reminder that fusion and reranking should be evaluated together rather than assumed to help every cutoff. On QASPER, a separate BM25 diagnostic reaches 23.6, 62.5, and 78.7 percent at ranks 1, 5, and 10 over 927 answerable development questions; these values are not directly comparable with the WattBot and SciFact Recall@1 rows because QASPER contains full papers and is reported at multiple cutoffs.
+Table~\ref{tab:retrieval} reports Recall@1 on the two transfer datasets. Reranking improves early recall on both datasets. The hybrid score is not always higher than BM25 at rank one, which is a useful reminder that fusion and reranking should be evaluated together rather than assumed to help every cutoff. On QASPER, a separate BM25 diagnostic reaches 23.6, 62.5, and 78.7 percent at ranks 1, 5, and 10 over 927 answerable development questions. We did not run the WattBot answer generator on QASPER, so these are retrieval-only transfer results rather than end-to-end QA scores; QASPER contains full papers and is reported at multiple cutoffs.
 
 \begin{table}[t]
 \centering
@@ -117,7 +118,7 @@ WattBot 2025 & 75.61 & 66.67 & \textbf{80.77} \\
 SciFact & 70.20 & 68.28 & \textbf{82.77} \\
 \bottomrule
 \end{tabular}
-\caption{EvidenceFirst-RAG retrieval-component ablations: Recall@1 (percent) on transfer datasets. These columns isolate retrieval components; they are not separate final systems.}
+\caption{\method{} retrieval-component ablations: Recall@1 (percent) on transfer datasets. These columns isolate retrieval components; they are not separate final systems.}
 \label{tab:retrieval}
 \end{table}
 
@@ -136,7 +137,7 @@ Table~\ref{tab:generator} shows the most important development result. Always-on
 \scriptsize
 \begin{tabular}{lrrrr}
 \toprule
-EvidenceFirst-RAG variant & $V$ & $C_{F1}$ & $A$ & Overall \\
+\method{} variant & $V$ & $C_{F1}$ & $A$ & Overall \\
 \midrule
 Qwen3.5 thinking & .665 & .667 & 1.000 & .6824 \\
 Qwen3.5 + direct repair & .767 & .787 & .996 & .7827 \\
@@ -144,7 +145,7 @@ Qwen3.5 + conservative recovery & .767 & .789 & .996 & \textbf{.7831} \\
 Qwen3.6 direct generator & .718 & .781 & 1.000 & .7450 \\
 \bottomrule
 \end{tabular}
-\caption{EvidenceFirst-RAG generator and output-policy ablations. The retrieval and scoring contract are held fixed.}
+\caption{\method{} generator and output-policy ablations. The retrieval and scoring contract are held fixed.}
 \label{tab:generator}
 \end{table}
 
@@ -158,8 +159,8 @@ To test whether the generator depends on seeing the same source papers during tr
 \toprule
 Variant & $n$ & $V$ & $C_{F1}$ & Overall \\
 \midrule
-Base EvidenceFirst-RAG & 75 & .867 & .859 & .865 \\
-EvidenceFirst-RAG + LoRA & 75 & .813 & .873 & .835 \\
+Base \method{} & 75 & .867 & .859 & .865 \\
+\method{} + LoRA & 75 & .813 & .873 & .835 \\
 \bottomrule
 \end{tabular}
 \caption{Matched comparison on the same 75-question source-disjoint fold.}
@@ -182,7 +183,7 @@ Grouped fold & $n$ & Overall \\
 Macro mean $\pm$ SD & 245 & $\mathbf{.759\pm.162}$ \\
 \bottomrule
 \end{tabular}
-\caption{Five-fold source-disjoint evaluation of EvidenceFirst-RAG with LoRA. Each citation-connected source group is kept within one fold.}
+\caption{Five-fold source-disjoint evaluation of \method{} with LoRA. Each citation-connected source group is kept within one fold.}
 \label{tab:grouped-cv}
 \end{table}
 
@@ -200,10 +201,10 @@ BM25-only ablation & 75 & .580 \\
 Hybrid-retrieval ablation & 75 & .709 \\
 Full reranker, top-12 & 75 & .710 \\
 Full reranker, top-6 & 75 & .687 \\
-EvidenceFirst-RAG-Top3 & 75 & $\mathbf{.761}$ \\
+\method-Top3 & 75 & $\mathbf{.761}$ \\
 \bottomrule
 \end{tabular}
-\caption{EvidenceFirst-RAG retrieval and evidence-budget ablations on the same source-disjoint fold using Qwen3.5-27B. Bold marks the preferred complete configuration.}
+\caption{\method{} retrieval and evidence-budget ablations on the same source-disjoint fold using Qwen3.5-27B. Bold marks the preferred complete configuration.}
 \label{tab:evidence-budget}
 \end{table}
 
@@ -213,7 +214,7 @@ EvidenceFirst-RAG-Top3 & 75 & $\mathbf{.761}$ \\
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{llrrrrl}
 \toprule
-Generator diagnostic within EvidenceFirst-RAG & Role & $n$ & $V$ & $C_{F1}$ & $A$ & Overall \\
+Generator diagnostic within \method{} & Role & $n$ & $V$ & $C_{F1}$ & $A$ & Overall \\
 \midrule
 Qwen3.5-27B MS-SWIFT LoRA \citep{qwen3} & frozen fold & 49 & .714 & .811 & -- & .7479 \\
 Kimi K3.1 Pro \citep{kimiwa} & frozen fold & 49 & .837 & .752 & 1.000 & .8279 \\
@@ -225,7 +226,7 @@ Nemotron 3 Ultra 550B \citep{nemotronultra} & frozen fold / free panel & 49 & .8
 Dots3 Note Preview \citep{dots3} & frozen fold & 49 & .571 & .581 & 1.000 & .5948 \\
 \bottomrule
 \end{tabular}}
-\caption{Generator diagnostics within EvidenceFirst-RAG on the same frozen 49-question fold. These rows change the generator or provider while keeping the evidence setup fixed; they are diagnostic comparisons, not separate retrieval pipelines.}
+\caption{Generator diagnostics within \method{} on the same frozen 49-question fold. These rows change the generator or provider while keeping the evidence setup fixed; they are diagnostic comparisons, not separate retrieval pipelines.}
 \label{tab:models}
 \end{table*}
 

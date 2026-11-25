@@ -1,8 +1,8 @@
-# EvidenceFirst
+# EviRAG
 
 Final project for Applied Deep Learning at Hamad Bin Khalifa University.
 
-The project studies an evidence-controlled retrieval-augmented generation system for precision-critical scientific question answering. The report evaluates hybrid retrieval, neural reranking, structured generation, citation validation, abstention, and deterministic answer normalization on the WattBot benchmark and related transfer data.
+The project studies EviRAG, an evidence-first retrieval-augmented generation system for precision-critical scientific question answering. The report evaluates hybrid retrieval, neural reranking, structured generation, citation validation, abstention, and deterministic answer normalization on the WattBot benchmark and related transfer data.
 
 ## Authors
 
