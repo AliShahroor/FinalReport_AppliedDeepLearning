@@ -1,0 +1,6 @@
+configuration,n,overall_score
+BM25 only,75,0.5799555556
+Hybrid retrieval,75,0.7092000000
+Reranked top-12,75,0.7102666667
+Reranked top-6,75,0.6868888889
+Reranked top-3,75,0.7610222222

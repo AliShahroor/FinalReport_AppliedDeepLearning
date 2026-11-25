@@ -29,7 +29,7 @@
 \maketitle
 
 \begin{abstract}
-Large language models can answer scientific questions fluently while still selecting the wrong source, misreading a table, or returning a numerically plausible but unsupported value. We study an evidence-controlled retrieval-augmented generation (RAG) pipeline for questions about the energy, carbon, and water costs of artificial intelligence. The system combines lexical retrieval, dense retrieval, neural reranking, structured generation, citation checks, abstention, and deterministic answer normalization. On the WattBot 2026 Kaggle benchmark, a source-audited candidate reached a public score of 0.966 under the competition's joint answer-and-citation metric. Controlled local experiments show that output repair improves a Qwen3.5-27B development score from 0.6824 to 0.7827, while neural reranking improves Recall@1 on two transfer datasets. On a 41-question WattBot 2025 transfer set, the end-to-end score is 0.731 before normalization and 0.786 after conservative range and unit normalization. These results suggest that reliability is not determined by generator scale alone: evidence selection and structured-output control are separate, measurable capabilities.
+Large language models can answer scientific questions fluently while still selecting the wrong source, misreading a table, or returning a numerically plausible but unsupported value. We study an evidence-controlled retrieval-augmented generation (RAG) pipeline for questions about the energy, carbon, and water costs of artificial intelligence. The system combines lexical retrieval, dense retrieval, neural reranking, structured generation, citation checks, abstention, and deterministic answer normalization. On the WattBot 2026 Kaggle benchmark, a source-audited candidate reached a public score of 0.966 under the competition's joint answer-and-citation metric. Controlled local experiments show that output repair improves a Qwen3.5-27B development score from 0.6824 to 0.7827, while neural reranking improves Recall@1 on two transfer datasets. On a 41-question WattBot 2025 transfer set, the end-to-end score is 0.731 before normalization and 0.786 after conservative range and unit normalization. On a source-disjoint fold, restricting the final context to three reranked passages improves the score from 0.710 to 0.761; across five grouped folds, LoRA obtains a macro-average of 0.759 (SD 0.162). These results suggest that reliability is not determined by generator scale alone: evidence selection, context size, and structured-output control are separate, measurable capabilities.
 \end{abstract}
 
 \section{Introduction}
@@ -142,12 +142,12 @@ Qwen3.5 thinking & .665 & .667 & 1.000 & .6824 \\
 Qwen3.6 direct & .718 & .781 & 1.000 & .7450 \\
 \bottomrule
 \end{tabular}
-\caption{Full development-set results. $V$ is answer-value matching, $C_{F1}$ is citation F1, and $A$ is abstention agreement.}
+\caption{Development-set results. $V$ is answer-value matching; $C_{F1}$ is citation F1; $A$ is abstention agreement.}
 \label{tab:generator}
 \end{table}
 
 \subsection{Unseen-Source Generalization}
-To test whether the generator depends on seeing the same source papers during training and validation, we construct connected citation groups and keep every group in a single fold. The held-out fold contains 75 questions from 9 source groups, while training uses 170 questions from the remaining groups; the train and validation reference sets have zero overlap. On this held-out fold, the unadapted Qwen3.5-27B pipeline obtains 0.865, while LoRA fine-tuning on the remaining questions obtains 0.835 (value match 0.813, citation F1 0.873, and abstention agreement 1.000). Thus the evidence-controlled pipeline transfers to unseen source papers, but in-domain fine-tuning is not automatically beneficial and appears to overfit some source-specific patterns. This is still one fold rather than a five-fold estimate.
+To test whether the generator depends on seeing the same source papers during training and validation, we construct connected citation groups and keep every group in a single fold. The first held-out fold contains 75 questions from 9 source groups, while training uses 170 questions from the remaining groups; the train and validation reference sets have zero overlap. On this fold, the unadapted Qwen3.5-27B pipeline obtains 0.865, while LoRA fine-tuning on the remaining questions obtains 0.835 (value match 0.813, citation F1 0.873, and abstention agreement 1.000). Repeating the LoRA evaluation across five grouped folds gives scores of 0.835, 0.793, 0.473, 0.827, and 0.869, for a macro-average of 0.759 (SD 0.162; range 0.473--0.869). The variation is substantial: the system transfers well to several unseen-source groups but struggles on at least one source mixture. This is more informative than a single split and argues against claiming uniform generalization.
 
 \begin{table}[t]
 \centering
@@ -162,6 +162,47 @@ Source-disjoint LoRA & 75 & .813 & .873 & .835 \\
 \end{tabular}
 \caption{Matched source-disjoint generalization comparison on the same 75-question fold.}
 \label{tab:source-disjoint}
+\end{table}
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{lrr}
+\toprule
+Grouped fold & $n$ & Overall \\
+\midrule
+0 & 75 & .835 \\
+1 & 43 & .793 \\
+2 & 43 & .473 \\
+3 & 42 & .827 \\
+4 & 42 & .869 \\
+\midrule
+Macro mean $\pm$ SD & 245 & $\mathbf{.759\pm.162}$ \\
+\bottomrule
+\end{tabular}
+\caption{Five-fold source-disjoint LoRA evaluation. Each citation-connected source group is kept within one fold; no source reference overlaps the corresponding training partition.}
+\label{tab:grouped-cv}
+\end{table}
+
+\subsection{Retrieval and Evidence-Budget Ablations}
+We hold the question set and Qwen3.5-27B generator fixed and vary only the evidence supplied to it. On the same 75-question source-disjoint fold, BM25 alone scores .580, hybrid retrieval scores .709, and the full reranked context with twelve passages scores .710. Truncating the reranked context to the three highest-ranked passages raises the score to .761, whereas six passages gives .687. A paired analysis finds that hybrid retrieval improves over BM25 on 18 questions and loses on 4. The main gain therefore comes from combining lexical and semantic retrieval and then controlling context size, not from adding more passages indiscriminately.
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{lrr}
+\toprule
+Evidence configuration & $n$ & Overall \\
+\midrule
+BM25 only & 75 & .580 \\
+Hybrid retrieval & 75 & .709 \\
+Reranked, top-12 & 75 & .710 \\
+Reranked, top-6 & 75 & .687 \\
+Reranked, top-3 & 75 & $\mathbf{.761}$ \\
+\bottomrule
+\end{tabular}
+\caption{Controlled retrieval and evidence-budget ablation on the same source-disjoint fold using the Qwen3.5-27B generator. Bold marks the best score.}
+\label{tab:evidence-budget}
 \end{table}
 
 \begin{table*}[t]
@@ -208,7 +249,7 @@ Range/unit normalization & .732 & .843 & .767 \\
 + reciprocal conversion & .756 & .843 & \textbf{.786} \\
 \bottomrule
 \end{tabular}
-\caption{WattBot 2025 transfer results on 41 labeled questions. The transformations are deterministic and do not use gold labels.}
+\caption{WattBot 2025 transfer results on 41 labeled questions.}
 \label{tab:transfer}
 \end{table}
 
@@ -242,17 +283,17 @@ Rank & Team & Public score \\
 
 \section{Analysis}
 \label{sec:analysis}
-The experiments support three conclusions. First, retrieval and generation are separable. The reranker improves the chance that the correct evidence appears early, but the generator can still misread a unit or perform the wrong arithmetic. Second, output control is a substantial part of practical QA quality. The 0.1007 gain from repair is larger than the difference between the two tested generator families on the full development set. Third, transfer exposes failure modes that a single leaderboard score hides. The WattBot 2025 normalizer recovers formatting and unit errors, but it cannot solve substantive errors such as choosing the wrong percentage or confusing two reported batch sizes.
+The experiments support four conclusions. First, retrieval and generation are separable. Hybrid retrieval is substantially stronger than BM25 alone, while neural reranking adds little when twelve passages are passed unchanged to the generator. Second, context control matters: the top-three evidence budget outperforms both six and twelve passages, suggesting that additional retrieved text can introduce distraction. Third, output control is a substantial part of practical QA quality. The 0.1007 gain from repair is larger than the difference between the two tested generator families on the full development set. Fourth, transfer exposes failure modes that a single leaderboard score hides. The five-fold source-disjoint results vary widely, and the WattBot 2025 normalizer recovers formatting and unit errors but cannot solve substantive errors such as choosing the wrong percentage or confusing two reported batch sizes.
 
 These findings are relevant to hallucination and confabulation research. We do not claim to detect every hallucination, and we do not introduce a new human hallucination label set. Instead, we define a narrower operational target: an answer is unreliable when its value is wrong, its citation does not support the value, or it should have abstained. This target is measurable from the benchmark contract and can be reproduced without subjective post-hoc judgments.
 
 \section{Limitations}
 \label{sec:limitations}
-The evaluation is primarily English and focuses on scientific questions about AI infrastructure and environmental impact. WattBot 2025 is small, with 41 labeled questions, so its transfer score should be interpreted as a stress test rather than a population estimate. SciFact and QASPER evaluate evidence retrieval rather than the full WattBot answer schema. The public Kaggle score is a blind benchmark result and does not by itself identify which component caused each gain. The hosted and free-model comparisons use one fixed 49-question fold from the 245-question development set; they are paired diagnostics, not full-dataset estimates. The source-disjoint comparison uses one 75-question held-out fold, so five grouped folds, multiple seeds, and bootstrap intervals remain useful future work. Finally, the system requires substantial GPU resources for dense retrieval, reranking, and long-context generation; reducing this cost is an important follow-up.
+The evaluation is primarily English and focuses on scientific questions about AI infrastructure and environmental impact. WattBot 2025 is small, with 41 labeled questions, so its transfer score should be interpreted as a stress test rather than a population estimate. SciFact and QASPER evaluate evidence retrieval rather than the full WattBot answer schema. The public Kaggle score is a blind benchmark result and does not by itself identify which component caused each gain. The hosted and free-model comparisons use one fixed 49-question fold from the 245-question development set; they are paired diagnostics, not full-dataset estimates. Although five grouped source-disjoint folds are now reported, the fold variance is large and the study uses one fine-tuning seed; confidence intervals over additional seeds would be desirable. The evidence-budget results are also measured on one held-out fold and should not be interpreted as a universal optimum for every corpus. Finally, the system requires substantial GPU resources for dense retrieval, reranking, and long-context generation; reducing this cost is an important follow-up.
 
 \section{Conclusion}
 \label{sec:conclusion}
-We presented an evidence-controlled RAG pipeline for precision-critical scientific QA. The pipeline combines lexical and neural retrieval, neural reranking, structured generation, citation validation, abstention, and deterministic normalization. It achieved a public WattBot 2026 score of 0.966 and transferred to WattBot 2025 with an end-to-end score of 0.786 after conservative normalization. The central lesson is simple: improving reliability is not only a matter of selecting a larger generator. Retrieving the right evidence, preserving a valid output structure, and checking units and citations are separate engineering and research problems.
+We presented an evidence-controlled RAG pipeline for precision-critical scientific QA. The pipeline combines lexical and neural retrieval, neural reranking, structured generation, citation validation, abstention, deterministic normalization, and an explicit evidence budget. It achieved a public WattBot 2026 score of 0.966, transferred to WattBot 2025 with an end-to-end score of 0.786 after conservative normalization, and reached 0.761 on the source-disjoint top-three evidence condition. The central lesson is simple: improving reliability is not only a matter of selecting a larger generator. Retrieving the right evidence, limiting irrelevant context, preserving a valid output structure, and checking units and citations are separate engineering and research problems.
 
 For the course submission, the reported result is: \textbf{DetectorAI, 1st of 25 teams, public score 0.966}. The submitted code should include the saved retrieval files, model configuration, normalization script, validator, and instructions for running the local evaluation without private API credentials.
 
