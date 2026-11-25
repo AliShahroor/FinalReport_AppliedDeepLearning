@@ -93,6 +93,8 @@ The generator is prompted to return a fixed schema containing an answer value, u
 \subsection{Deterministic Normalization}
 Some errors are representational rather than semantic. For example, a model may output ``80--90'' when the scorer requires ``[80,90]'', or may report ``10--50 responses per bottle'' when the question asks for bottles per response. Our normalization layer applies only transformations determined by the question unit and explicit answer format. It does not use gold labels and does not replace a substantive model answer with a manually selected value.
 
+\paragraph{Naming convention.} We use \emph{EvidenceFirst-RAG} for the complete method: hybrid lexical--dense retrieval, neural reranking, a compact evidence budget, structured generation, and deterministic validation. Rows labelled BM25, hybrid retrieval, or a different evidence budget are ablations of EvidenceFirst-RAG, not competing end-to-end methods. Rows in the generator table replace only the generator or output policy while keeping the evidence setup fixed. The preferred configuration identified here is \emph{EvidenceFirst-RAG-Top3}.
+
 \section{Experimental Setup}
 \label{sec:setup}
 The main WattBot development experiments use the frozen retrieved evidence and a Qwen3.5-27B generator from the Qwen family \citep{qwen3,qwen3embedding}. We compare thinking mode, direct generation, structured-output repair, and conservative field recovery. Additional controlled experiments use a Qwen3.6 mixture-of-experts generator, a task-adapted Qwen3.5 model, and hosted models including Kimi K3.1 Pro, Gemini 3.8 Flash, GPT-6.1 Terra, Dots3 Note Preview, GLM-5.3 Flash, and Nemotron 3 Ultra on frozen evidence. The GLM and Nemotron runs were free-provider verifier-panel runs; Dots3 was a free standalone control. These comparisons are diagnostic and are not treated as interchangeable with the full development set. Model identifiers are reported exactly as used, and each source is documented in the bibliography or official model documentation.
@@ -109,13 +111,13 @@ Table~\ref{tab:retrieval} reports Recall@1 on the two transfer datasets. Reranki
 \scriptsize
 \begin{tabular}{lrrr}
 \toprule
-Dataset & BM25 & Hybrid & + reranker \\
+Dataset & Lexical-only & Hybrid & Hybrid + reranker \\
 \midrule
 WattBot 2025 & 75.61 & 66.67 & \textbf{80.77} \\
 SciFact & 70.20 & 68.28 & \textbf{82.77} \\
 \bottomrule
 \end{tabular}
-\caption{Retrieval Recall@1 (percent) on transfer datasets. The reranker uses the same candidate set produced by the preceding retrieval stage.}
+\caption{EvidenceFirst-RAG retrieval-component ablations: Recall@1 (percent) on transfer datasets. These columns isolate retrieval components; they are not separate final systems.}
 \label{tab:retrieval}
 \end{table}
 
@@ -134,15 +136,15 @@ Table~\ref{tab:generator} shows the most important development result. Always-on
 \scriptsize
 \begin{tabular}{lrrrr}
 \toprule
-System & $V$ & $C_{F1}$ & $A$ & Overall \\
+EvidenceFirst-RAG variant & $V$ & $C_{F1}$ & $A$ & Overall \\
 \midrule
 Qwen3.5 thinking & .665 & .667 & 1.000 & .6824 \\
-+ direct repair & .767 & .787 & .996 & .7827 \\
-+ conservative recovery & .767 & .789 & .996 & \textbf{.7831} \\
-Qwen3.6 direct & .718 & .781 & 1.000 & .7450 \\
+Qwen3.5 + direct repair & .767 & .787 & .996 & .7827 \\
+Qwen3.5 + conservative recovery & .767 & .789 & .996 & \textbf{.7831} \\
+Qwen3.6 direct generator & .718 & .781 & 1.000 & .7450 \\
 \bottomrule
 \end{tabular}
-\caption{Development-set results. $V$ is answer-value matching; $C_{F1}$ is citation F1; $A$ is abstention agreement.}
+\caption{EvidenceFirst-RAG generator and output-policy ablations. The retrieval and scoring contract are held fixed.}
 \label{tab:generator}
 \end{table}
 
@@ -151,16 +153,16 @@ To test whether the generator depends on seeing the same source papers during tr
 
 \begin{table}[t]
 \centering
-\small
+\scriptsize
 \begin{tabular}{lrrrr}
 \toprule
-System & $n$ & $V$ & $C_{F1}$ & Overall \\
+Variant & $n$ & $V$ & $C_{F1}$ & Overall \\
 \midrule
-Base pipeline & 75 & .867 & .859 & .865 \\
-Source-disjoint LoRA & 75 & .813 & .873 & .835 \\
+Base EvidenceFirst-RAG & 75 & .867 & .859 & .865 \\
+EvidenceFirst-RAG + LoRA & 75 & .813 & .873 & .835 \\
 \bottomrule
 \end{tabular}
-\caption{Matched source-disjoint generalization comparison on the same 75-question fold.}
+\caption{Matched comparison on the same 75-question source-disjoint fold.}
 \label{tab:source-disjoint}
 \end{table}
 
@@ -180,7 +182,7 @@ Grouped fold & $n$ & Overall \\
 Macro mean $\pm$ SD & 245 & $\mathbf{.759\pm.162}$ \\
 \bottomrule
 \end{tabular}
-\caption{Five-fold source-disjoint LoRA evaluation. Each citation-connected source group is kept within one fold; no source reference overlaps the corresponding training partition.}
+\caption{Five-fold source-disjoint evaluation of EvidenceFirst-RAG with LoRA. Each citation-connected source group is kept within one fold.}
 \label{tab:grouped-cv}
 \end{table}
 
@@ -192,16 +194,16 @@ We hold the question set and Qwen3.5-27B generator fixed and vary only the evide
 \small
 \begin{tabular}{lrr}
 \toprule
-Evidence configuration & $n$ & Overall \\
+Evidence config. & $n$ & Overall \\
 \midrule
-BM25 only & 75 & .580 \\
-Hybrid retrieval & 75 & .709 \\
-Reranked, top-12 & 75 & .710 \\
-Reranked, top-6 & 75 & .687 \\
-Reranked, top-3 & 75 & $\mathbf{.761}$ \\
+BM25-only ablation & 75 & .580 \\
+Hybrid-retrieval ablation & 75 & .709 \\
+Full reranker, top-12 & 75 & .710 \\
+Full reranker, top-6 & 75 & .687 \\
+EvidenceFirst-RAG-Top3 & 75 & $\mathbf{.761}$ \\
 \bottomrule
 \end{tabular}
-\caption{Controlled retrieval and evidence-budget ablation on the same source-disjoint fold using the Qwen3.5-27B generator. Bold marks the best score.}
+\caption{EvidenceFirst-RAG retrieval and evidence-budget ablations on the same source-disjoint fold using Qwen3.5-27B. Bold marks the preferred complete configuration.}
 \label{tab:evidence-budget}
 \end{table}
 
@@ -211,7 +213,7 @@ Reranked, top-3 & 75 & $\mathbf{.761}$ \\
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{llrrrrl}
 \toprule
-Model / policy & Role & $n$ & $V$ & $C_{F1}$ & $A$ & Overall \\
+Generator diagnostic within EvidenceFirst-RAG & Role & $n$ & $V$ & $C_{F1}$ & $A$ & Overall \\
 \midrule
 Qwen3.5-27B MS-SWIFT LoRA \citep{qwen3} & frozen fold & 49 & .714 & .811 & -- & .7479 \\
 Kimi K3.1 Pro \citep{kimiwa} & frozen fold & 49 & .837 & .752 & 1.000 & .8279 \\
@@ -223,7 +225,7 @@ Nemotron 3 Ultra 550B \citep{nemotronultra} & frozen fold / free panel & 49 & .8
 Dots3 Note Preview \citep{dots3} & frozen fold & 49 & .571 & .581 & 1.000 & .5948 \\
 \bottomrule
 \end{tabular}}
-\caption{Matched generator diagnostics on the same frozen 49-question fold. $V$ is answer-value matching, $C_{F1}$ is citation F1, and $A$ is abstention agreement. Bold marks the best overall score in this fold. These rows are not directly comparable with the full-development ablation table. Each model is cited to a technical report, model card, or official provider documentation.}
+\caption{Generator diagnostics within EvidenceFirst-RAG on the same frozen 49-question fold. These rows change the generator or provider while keeping the evidence setup fixed; they are diagnostic comparisons, not separate retrieval pipelines.}
 \label{tab:models}
 \end{table*}
 

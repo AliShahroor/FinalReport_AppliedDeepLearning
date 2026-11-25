@@ -84,6 +84,8 @@ The generator is prompted to return a fixed schema containing an answer value, u
 \subsection{Deterministic Normalization}
 Some errors are representational rather than semantic. For example, a model may output ``80--90'' when the scorer requires ``[80,90]'', or may report ``10--50 responses per bottle'' when the question asks for bottles per response. Our normalization layer applies only transformations determined by the question unit and explicit answer format. It does not use gold labels and does not replace a substantive model answer with a manually selected value.
 
+\paragraph{Naming convention.} We use \emph{EvidenceFirst-RAG} for the complete method: hybrid lexical--dense retrieval, neural reranking, a compact evidence budget, structured generation, and deterministic validation. BM25, hybrid retrieval, and alternative evidence budgets are ablations of the same method. The preferred configuration identified here is \emph{EvidenceFirst-RAG-Top3}.
+
 \section{Experimental Setup}
 \label{sec:setup}
 The main WattBot development experiments use the frozen retrieved evidence and a Qwen3.5-27B generator from the Qwen family \citep{qwen3,qwen3embedding}. We compare thinking mode, direct generation, structured-output repair, and conservative field recovery. Additional controlled experiments use a Qwen3.6 mixture-of-experts generator and Kimi K3.1 Pro \citep{kimiwa} on the same 49-question fold. The latter comparisons are diagnostic and are not treated as interchangeable with the full development set.
@@ -145,16 +147,16 @@ To test source transfer, we keep citation-connected source groups within folds. 
 \small
 \begin{tabular}{lrr}
 \toprule
-Evidence configuration & $n$ & Overall \\
+Evidence config. & $n$ & Overall \\
 \midrule
-BM25 only & 75 & .580 \\
-Hybrid retrieval & 75 & .709 \\
-Reranked, top-12 & 75 & .710 \\
-Reranked, top-6 & 75 & .687 \\
-Reranked, top-3 & 75 & $\mathbf{.761}$ \\
+BM25-only ablation & 75 & .580 \\
+Hybrid-retrieval ablation & 75 & .709 \\
+Full reranker, top-12 & 75 & .710 \\
+Full reranker, top-6 & 75 & .687 \\
+EvidenceFirst-RAG-Top3 & 75 & $\mathbf{.761}$ \\
 \bottomrule
 \end{tabular}
-\caption{Controlled retrieval and evidence-budget ablation on the same source-disjoint fold.}
+\caption{EvidenceFirst-RAG retrieval and evidence-budget ablations on the same source-disjoint fold.}
 \label{tab:evidence-budget}
 \end{table}
 
