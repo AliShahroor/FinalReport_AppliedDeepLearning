@@ -1,0 +1,11 @@
+{
+  "n": 75,
+  "categories": {
+    "correct_or_partial": 53,
+    "retrieval_risk": 3,
+    "structured_reasoning_failure": 8,
+    "citation_failure": 8,
+    "abstention_failure": 3
+  },
+  "protocol": "Primary categories are scorer- and manifest-based; retrieval_risk is conservative and not a causal proof."
+}

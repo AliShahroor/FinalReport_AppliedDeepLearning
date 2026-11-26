@@ -26,6 +26,7 @@ The archived summaries are in `code/results/`:
 - `evidence_budget_ablation_summary.csv`
 - `source_disjoint_five_fold_summary.csv`
 - `bm25_qasper_scifact_2026-11-23.json`
+- `error_analysis_summary.json` and `error_analysis_75q.csv`
 
 The evidence-budget helper reproduces the context-size operation used in the experiment:
 
@@ -35,6 +36,19 @@ python3 code/limit_retrieval_candidates.py \
   --output reranked_top3.jsonl \
   --k 3
 ```
+
+The held-out error analysis can be regenerated when the WattBot validation files are available:
+
+```bash
+python3 code/error_analysis.py \
+  --gold path/to/val_gold.csv \
+  --predictions path/to/predictions.csv \
+  --manifest path/to/val_manifest.jsonl \
+  --output-csv error_analysis.csv \
+  --output-json error_analysis.json
+```
+
+The script deliberately calls the retrieval category `retrieval_risk`: it only means that a gold source was absent from the saved candidate set, not that retrieval is proven to be the causal failure.
 
 ## Full local pipeline
 

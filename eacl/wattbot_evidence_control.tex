@@ -194,6 +194,31 @@ The best WattBot 2026 candidate obtained a public Kaggle score of \textbf{0.966}
 \label{sec:analysis}
 The experiments support four conclusions. First, retrieval and generation are separable. Hybrid retrieval is substantially stronger than BM25 alone, while neural reranking adds little when twelve passages are passed unchanged to the generator. Second, context control matters: the top-three evidence budget outperforms both six and twelve passages. Third, output control is a substantial part of practical QA quality. Fourth, transfer exposes failure modes that a single leaderboard score hides: the five-fold source-disjoint results vary widely, and the WattBot 2025 normalizer recovers formatting and unit errors but cannot solve substantive numerical or cross-paper errors.
 
+\subsection{Error Analysis}
+We applied a fixed diagnostic to the 75-question source-disjoint fold. A case is labeled a retrieval risk only when at least one gold document is absent from the saved candidate set; this is a conservative indicator, not a causal claim. Other wrong values are labeled structured reasoning when the gold item requires table, figure, mathematical, cross-paper, or reconciliation reasoning. Citation-only cases have a correct value but incomplete or unsupported citations, and abstention cases disagree on whether the question is answerable.
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{lrr}
+\toprule
+Diagnostic category & Count & Share \\
+\midrule
+No primary error detected & 53 & 70.7\% \\
+Structured reasoning & 8 & 10.7\% \\
+Citation-only & 8 & 10.7\% \\
+Retrieval risk & 3 & 4.0\% \\
+Abstention & 3 & 4.0\% \\
+\midrule
+Total held-out questions & 75 & 100.0\% \\
+\bottomrule
+\end{tabular}
+\caption{Conservative error analysis on the source-disjoint fold. Retrieval risk is not by itself proof that retrieval caused the error.}
+\label{tab:error-analysis}
+\end{table}
+
+Structured reasoning is the largest actionable residual category, while citation-only failures form a separate target for deterministic validation. The result supports measuring evidence selection, reasoning, and output control separately rather than treating every failure as hallucination.
+
 These findings are relevant to hallucination and confabulation research. We do not claim to detect every hallucination, and we do not introduce a new human hallucination label set. Instead, we define a narrower operational target: an answer is unreliable when its value is wrong, its citation does not support the value, or it should have abstained. This target is measurable from the benchmark contract and can be reproduced without subjective post-hoc judgments.
 
 \section{Limitations}

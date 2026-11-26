@@ -289,6 +289,31 @@ Rank & Team & Public score \\
 \label{sec:analysis}
 The experiments support four conclusions. First, retrieval and generation are separable. Hybrid retrieval is substantially stronger than BM25 alone, while neural reranking adds little when twelve passages are passed unchanged to the generator. Second, context control matters: the top-three evidence budget outperforms both six and twelve passages, suggesting that additional retrieved text can introduce distraction. Third, output control is a substantial part of practical QA quality. The 0.1007 gain from repair is larger than the difference between the two tested generator families on the full development set. Fourth, transfer exposes failure modes that a single leaderboard score hides. The five-fold source-disjoint results vary widely, and the WattBot 2025 normalizer recovers formatting and unit errors but cannot solve substantive errors such as choosing the wrong percentage or confusing two reported batch sizes.
 
+\subsection{Error Analysis}
+To make the residual failures concrete, we applied a fixed diagnostic to the 75-question source-disjoint fold. We compared the final predictions with the deterministic scorer and inspected the saved retrieval manifest. We call a case a \emph{retrieval risk} only when at least one gold document is absent from the saved candidate set; this is a conservative indicator, not a causal claim. Remaining wrong values are assigned to structured reasoning when the gold item is marked as requiring table, figure, mathematical, cross-paper, or reconciliation reasoning. Citation failures are cases with a correct value but incomplete or unsupported citations, and abstention failures are disagreements on whether the question is answerable.
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{lrr}
+\toprule
+Diagnostic category & Count & Share \\
+\midrule
+No primary error detected & 53 & 70.7\% \\
+Structured reasoning & 8 & 10.7\% \\
+Citation-only & 8 & 10.7\% \\
+Retrieval risk & 3 & 4.0\% \\
+Abstention & 3 & 4.0\% \\
+\midrule
+Total held-out questions & 75 & 100.0\% \\
+\bottomrule
+\end{tabular}
+\caption{Conservative error analysis on the source-disjoint fold. Categories are mutually exclusive; retrieval risk means that a gold source was absent from the saved candidate manifest and is not by itself proof that retrieval caused the model error.}
+\label{tab:error-analysis}
+\end{table}
+
+The analysis changes the practical interpretation of the headline score. The largest actionable group is structured reasoning, rather than citation formatting alone: table, figure, arithmetic, and multi-source questions remain the main substantive bottleneck. Citation-only errors are a separate, smaller target for post-generation validation, while the three retrieval-risk cases motivate better candidate recall. This supports the paper's central claim that evidence selection, reasoning, and output control should be measured separately.
+
 These findings are relevant to hallucination and confabulation research. We do not claim to detect every hallucination, and we do not introduce a new human hallucination label set. Instead, we define a narrower operational target: an answer is unreliable when its value is wrong, its citation does not support the value, or it should have abstained. This target is measurable from the benchmark contract and can be reproduced without subjective post-hoc judgments.
 
 \section{Limitations}

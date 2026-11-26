@@ -1,0 +1,76 @@
+id,category,reason
+q001,correct_or_partial,no primary failure detected by the scorer
+q003,correct_or_partial,no primary failure detected by the scorer
+q004,correct_or_partial,no primary failure detected by the scorer
+q008,correct_or_partial,no primary failure detected by the scorer
+q009,retrieval_risk,at least one gold source is absent from saved candidates
+q011,structured_reasoning_failure,"wrong value on table, figure, math, cross-paper, or reconcile item"
+q014,correct_or_partial,no primary failure detected by the scorer
+q023,structured_reasoning_failure,"wrong value on table, figure, math, cross-paper, or reconcile item"
+q027,correct_or_partial,no primary failure detected by the scorer
+q028,correct_or_partial,no primary failure detected by the scorer
+q052,correct_or_partial,no primary failure detected by the scorer
+q053,correct_or_partial,no primary failure detected by the scorer
+q072,correct_or_partial,no primary failure detected by the scorer
+q083,structured_reasoning_failure,"wrong value on table, figure, math, cross-paper, or reconcile item"
+q085,correct_or_partial,no primary failure detected by the scorer
+q088,retrieval_risk,at least one gold source is absent from saved candidates
+q134,citation_failure,value matched but citation set was incomplete or unsupported
+q148,correct_or_partial,no primary failure detected by the scorer
+q149,correct_or_partial,no primary failure detected by the scorer
+q150,citation_failure,value matched but citation set was incomplete or unsupported
+q156,retrieval_risk,at least one gold source is absent from saved candidates
+q175,correct_or_partial,no primary failure detected by the scorer
+q183,structured_reasoning_failure,"wrong value on table, figure, math, cross-paper, or reconcile item"
+q189,correct_or_partial,no primary failure detected by the scorer
+q190,correct_or_partial,no primary failure detected by the scorer
+q193,correct_or_partial,no primary failure detected by the scorer
+q196,correct_or_partial,no primary failure detected by the scorer
+q201,correct_or_partial,no primary failure detected by the scorer
+q203,correct_or_partial,no primary failure detected by the scorer
+q206,correct_or_partial,no primary failure detected by the scorer
+q209,correct_or_partial,no primary failure detected by the scorer
+q212,citation_failure,value matched but citation set was incomplete or unsupported
+q214,citation_failure,value matched but citation set was incomplete or unsupported
+q216,citation_failure,value matched but citation set was incomplete or unsupported
+q219,correct_or_partial,no primary failure detected by the scorer
+q221,structured_reasoning_failure,"wrong value on table, figure, math, cross-paper, or reconcile item"
+q222,correct_or_partial,no primary failure detected by the scorer
+q241,correct_or_partial,no primary failure detected by the scorer
+q243,correct_or_partial,no primary failure detected by the scorer
+q244,correct_or_partial,no primary failure detected by the scorer
+q245,correct_or_partial,no primary failure detected by the scorer
+q249,correct_or_partial,no primary failure detected by the scorer
+q252,correct_or_partial,no primary failure detected by the scorer
+q274,structured_reasoning_failure,"wrong value on table, figure, math, cross-paper, or reconcile item"
+q279,correct_or_partial,no primary failure detected by the scorer
+q281,correct_or_partial,no primary failure detected by the scorer
+q284,correct_or_partial,no primary failure detected by the scorer
+q286,structured_reasoning_failure,"wrong value on table, figure, math, cross-paper, or reconcile item"
+q287,correct_or_partial,no primary failure detected by the scorer
+q289,correct_or_partial,no primary failure detected by the scorer
+q336,correct_or_partial,no primary failure detected by the scorer
+q342,correct_or_partial,no primary failure detected by the scorer
+q365,correct_or_partial,no primary failure detected by the scorer
+q387,abstention_failure,gold and prediction disagree on abstention
+q407,correct_or_partial,no primary failure detected by the scorer
+q416,correct_or_partial,no primary failure detected by the scorer
+q418,correct_or_partial,no primary failure detected by the scorer
+q421,correct_or_partial,no primary failure detected by the scorer
+q425,correct_or_partial,no primary failure detected by the scorer
+q426,citation_failure,value matched but citation set was incomplete or unsupported
+q432,abstention_failure,gold and prediction disagree on abstention
+q433,correct_or_partial,no primary failure detected by the scorer
+q434,correct_or_partial,no primary failure detected by the scorer
+q435,correct_or_partial,no primary failure detected by the scorer
+q464,correct_or_partial,no primary failure detected by the scorer
+q467,correct_or_partial,no primary failure detected by the scorer
+q468,citation_failure,value matched but citation set was incomplete or unsupported
+q496,correct_or_partial,no primary failure detected by the scorer
+q499,abstention_failure,gold and prediction disagree on abstention
+q511,correct_or_partial,no primary failure detected by the scorer
+q518,structured_reasoning_failure,"wrong value on table, figure, math, cross-paper, or reconcile item"
+q536,correct_or_partial,no primary failure detected by the scorer
+q573,correct_or_partial,no primary failure detected by the scorer
+q574,correct_or_partial,no primary failure detected by the scorer
+q576,citation_failure,value matched but citation set was incomplete or unsupported
