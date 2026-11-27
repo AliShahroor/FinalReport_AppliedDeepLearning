@@ -1,0 +1,4 @@
+condition,n,value,citation_f1,abstention,overall
+Original generation,41,0.683,0.843,1.000,0.731
+Range/unit normalization,41,0.732,0.843,1.000,0.767
+Range/unit plus reciprocal normalization,41,0.756,0.843,1.000,0.786

@@ -27,6 +27,8 @@ The archived summaries are in `code/results/`:
 - `source_disjoint_five_fold_summary.csv`
 - `bm25_qasper_scifact_2026-11-23.json`
 - `error_analysis_summary.json` and `error_analysis_75q.csv`
+- `source_disjoint_bootstrap_ci.json`
+- `wattbot2025_transfer_scores.csv`
 
 The evidence-budget helper reproduces the context-size operation used in the experiment:
 
@@ -49,6 +51,15 @@ python3 code/error_analysis.py \
 ```
 
 The script deliberately calls the retrieval category `retrieval_risk`: it only means that a gold source was absent from the saved candidate set, not that retrieval is proven to be the causal failure.
+
+Bootstrap intervals for the five grouped folds can be regenerated with:
+
+```bash
+python3 code/confidence_intervals.py \
+  --gold-dir path/to/ms_swift \
+  --pred-dir path/to/grouped_results \
+  --output source_disjoint_bootstrap_ci.json
+```
 
 ## Full local pipeline
 

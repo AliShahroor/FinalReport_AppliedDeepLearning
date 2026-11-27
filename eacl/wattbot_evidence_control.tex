@@ -141,7 +141,7 @@ Qwen3.6 direct & .718 & .781 & 1.000 & .7450 \\
 \end{table}
 
 \subsection{Unseen-Source and Evidence-Budget Generalization}
-To test source transfer, we keep citation-connected source groups within folds. The five grouped source-disjoint LoRA scores are 0.835, 0.793, 0.473, 0.827, and 0.869, giving a macro-average of 0.759 (SD 0.162; range 0.473--0.869). On the same 75-question held-out fold, we also compare retrieval conditions with a fixed Qwen3.5-27B generator. BM25 scores .580, hybrid retrieval .709, reranked top-12 .710, reranked top-6 .687, and reranked top-3 .761. Thus, combining lexical and semantic retrieval is important, but passing every retrieved passage to the generator is not: a compact top-three evidence budget performs best in this evaluation.
+To test source transfer, we keep citation-connected source groups within folds. The five grouped source-disjoint LoRA scores are 0.835, 0.793, 0.473, 0.827, and 0.869, giving a macro-average of 0.759 (SD 0.162; range 0.473--0.869). A row-level bootstrap diagnostic gives a macro mean of 0.757 with a 95\% bootstrap interval of [0.615, 0.844], conditional on the saved folds and one training seed. On the same 75-question held-out fold, we also compare retrieval conditions with a fixed Qwen3.5-27B generator. BM25 scores .580, hybrid retrieval .709, reranked top-12 .710, reranked top-6 .687, and reranked top-3 .761. Thus, combining lexical and semantic retrieval is important, but passing every retrieved passage to the generator is not: a compact top-three evidence budget performs best in this evaluation.
 
 \begin{table}[t]
 \centering

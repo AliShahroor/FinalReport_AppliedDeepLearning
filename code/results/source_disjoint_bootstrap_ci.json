@@ -1,0 +1,15 @@
+{
+  "folds": [
+    {"fold": 0, "n": 75, "mean": 0.8306667, "ci95": [0.7566667, 0.9004444]},
+    {"fold": 1, "n": 43, "mean": 0.7918605, "ci95": [0.6848837, 0.8906977]},
+    {"fold": 2, "n": 43, "mean": 0.4732558, "ci95": [0.3395349, 0.6139535]},
+    {"fold": 3, "n": 42, "mean": 0.8265873, "ci95": [0.7230060, 0.9158730]},
+    {"fold": 4, "n": 42, "mean": 0.8650794, "ci95": [0.7730159, 0.9420635]}
+  ],
+  "macro_mean": 0.7574899,
+  "macro_sd": 0.1609931,
+  "macro_bootstrap_ci95": [0.6145884, 0.8436159],
+  "seed": 34060,
+  "draws": 10000,
+  "note": "Intervals are bootstrap diagnostics over saved predictions; they do not account for additional model or data-selection uncertainty."
+}
